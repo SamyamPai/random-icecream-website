@@ -1,117 +1,213 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Pabbas Ice Cream Cafe</title>
-    <style>
-        body {
-            font-family: Arial;
-            background-color: #fffbe6;
-            margin: 0;
-        }
+  <meta charset="UTF-8">
+  <title>Ice Cream Order</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        .navbar {
-            background-color: #ffb3cc;
-            padding: 10px;
-            text-align: center;
-        }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fce3ec, #ffe9e3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
 
-        .navbar a {
-            margin: 20px;
-            text-decoration: none;
-            color: black;
-            font-weight: bold;
-        }
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      display: flex;
+      overflow: hidden;
+      max-width: 1000px;
+      width: 90%;
+      animation: fadeIn 0.6s ease;
+    }
 
-        h1 {
-            text-align: center;
-            color: #d63384;
-        }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        img {
-            display: block;
-            margin: 20px auto;
-            width: 400px;
-            border: 5px solid pink;
-        }
+    .image-box, .form-box {
+      flex: 1;
+      padding: 40px;
+    }
 
-        .section {
-            padding: 20px;
-        }
+    .image-box {
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-        .section h2 {
-            color: #ff6699;
-        }
+    .image-box img {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      object-fit: cover;
+    }
 
-        ul {
-            list-style-type: square;
-        }
+    .form-box {
+      background: #fff8f2;
+      display: flex;
+      flex-direction: column;
+    }
 
-        footer {
-            text-align: center;
-            padding: 10px;
-            background-color: #ffe6f0;
-            margin-top: 20px;
-        }
-    </style>
+    .form-box h2 {
+      margin-bottom: 20px;
+      color: #ff4e64;
+    }
+
+    .form-box input, .form-box button {
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .form-box input:focus {
+      border-color: #ff758c;
+      box-shadow: 0 0 0 2px rgba(255, 117, 140, 0.3);
+    }
+
+    .form-box button {
+      background: linear-gradient(to right, #ff758c, #ff7eb3);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .form-box button:hover {
+      transform: scale(1.02);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ff7b7b;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      display: none;
+      animation: fadeToast 0.5s ease;
+    }
+
+    @keyframes fadeToast {
+      from { opacity: 0; bottom: 10px; }
+      to { opacity: 1; bottom: 20px; }
+    }
+
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      max-width: 400px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      animation: fadeIn 0.5s ease;
+    }
+
+    .modal-content h3 {
+      color: #ff4e64;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Navigation -->
-    <div class="navbar">
-        <a href="#intro">Introduction</a>
-        <a href="#menu">Menu</a>
-        <a href="#products">Products</a>
-        <a href="#contact">Contact</a>
+  <div class="toast" id="toast">Please fill in all fields</div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h3>🍦 Order Confirmed!</h3>
+      <p id="summaryText"></p>
+      <button onclick="closeModal()">Close</button>
     </div>
+  </div>
 
-    <!-- Title -->
-    <h1>🍦 Welcome to Pabbas Ice Cream Cafe 🍨</h1>
-
-    <!-- Image -->
-    <img src="https://images.unsplash.com/photo-1589712235274-16d6d17094a3?auto=format&fit=crop&w=800&q=80" alt="Ice Cream Image">
-
-    <!-- Introduction Section -->
-    <div class="section" id="intro">
-        <h2>Introduction</h2>
-        <p>
-            Pabbas is a cozy and colorful ice cream café serving happiness in cones and cups! Located in the heart of the city, we’ve been making people smile with our rich and creamy treats since 1990. Our focus is on quality, freshness, and customer delight.
-        </p>
+  <div class="container">
+    <div class="image-box">
+      <img id="mainImage" src="https://pbs.twimg.com/media/FIv38jQVIAMwDa3?format=jpg&name=4096x4096" alt="Ice Cream">
     </div>
-
-    <!-- Menu Section -->
-    <div class="section" id="menu">
-        <h2>Menu</h2>
-        <ul>
-            <li>Special Gadbad</li>
-            <li>Dry Fruit Sundae</li>
-            <li>Mango Delight</li>
-            <li>Chocolate Dazzle</li>
-            <li>Fruit Salad with Ice Cream</li>
-            <li>Softy Cones & Kulfi</li>
-        </ul>
+    <div class="form-box">
+      <h2>Order Your Ice Cream</h2>
+      <!-- File input removed -->
+      <input type="text" id="name" placeholder="Your Name">
+      <input type="tel" id="phone" placeholder="Phone Number">
+      <input type="text" id="iceCream" placeholder="Ice Cream Name">
+      <input type="number" id="quantity" placeholder="Quantity">
+      <button onclick="submitOrder()">PLACE ORDER</button>
     </div>
+  </div>
 
-    <!-- Products Section -->
-    <div class="section" id="products">
-        <h2>Our Products</h2>
-        <p>
-            We offer a wide variety of freshly made ice creams, sundaes, milkshakes, and exclusive Pabbas specials. All our products are made using high-quality milk and natural ingredients. You can also buy takeaway family packs of your favorite flavors!
-        </p>
-    </div>
+  <script>
+    const toast = document.getElementById('toast');
+    const modal = document.getElementById('modal');
+    const summaryText = document.getElementById('summaryText');
 
-    <!-- Contact Section -->
-    <div class="section" id="contact">
-        <h2>Contact Us</h2>
-        <p>
-            📍 Address: Pabbas Ice Cream Café, MG Road, Mangalore<br>
-            📞 Phone: +91 98765 43210<br>
-            📧 Email: contact@pabbasicecream.com
-        </p>
-    </div>
+    function showToast(message) {
+      toast.textContent = message;
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 2000);
+    }
 
-    <!-- Footer -->
-    <footer>
-        <p>Thank you for visiting Pabbas Ice Cream Café! Come back for more scoops of joy! 🍧</p>
-    </footer>
+    function submitOrder() {
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const iceCream = document.getElementById('iceCream').value.trim();
+      const quantity = document.getElementById('quantity').value.trim();
+
+      if (!name || !phone || !iceCream || !quantity) {
+        showToast("Please fill in all fields");
+        return;
+      }
+
+      summaryText.innerHTML = `
+        <strong>Name:</strong> ${name}<br>
+        <strong>Phone:</strong> ${phone}<br>
+        <strong>Ice Cream:</strong> ${iceCream}<br>
+        <strong>Quantity:</strong> ${quantity}
+      `;
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+  </script>
 
 </body>
 </html>
